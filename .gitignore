@@ -1,3 +1,4 @@
 ./gradle
 ./work
 *.jar
+bandage.lock
