@@ -9,6 +9,7 @@ patchesCopied = False
 patchesApplied = False
 obfedJarGenerated = False
 paperclipJarGenerated = False
+clean = False
 if (os.path.isfile("./bandage.lock")):
     lockfile = open("./bandage.lock", "r")
     lockdata = lockfile.read()
@@ -49,6 +50,9 @@ def getBSLFromBool(data):
         return "0"
 
 def exit_handler():
+    global clean
+    if (clean):
+        return
     ds = "pc," + getBSLFromBool(paperCloned) + ";pcp," + getBSLFromBool(patchesCopied) + ";pa," + getBSLFromBool(patchesApplied) + ";ojg," + getBSLFromBool(obfedJarGenerated) + ";pjg," + getBSLFromBool(paperclipJarGenerated)
     f = open("./bandage.lock", "w")
     f.write(ds)
@@ -143,7 +147,16 @@ def paperclip(force):
         shutil.copy(f, "./paperclip.jar")
     print("[BPPaperclipGenerator/INFO] Generated paperclip jar successfully.")
     paperclipJarGenerated = True
-    
+
+def clean(force):
+    global clean
+    for f in glob.glob("./*.jar"):
+        os.remove(f)
+    shutil.rmtree("./work")
+    os.remove("bandage.lock")
+    clean = True
+    sys.exit(0)
+
 if (len(sys.argv) == 1):
     print("Usage: ./bandage <clonePaper|copyPatches|applyPatches|reobfJar|paperclip> [force]")
     print("Avaliable tasks:")
@@ -152,6 +165,7 @@ if (len(sys.argv) == 1):
     print("applyPatches - Apply patches.")
     print("reobfJar - Generate real jars and place them in root directory.")
     print("paperclip - Generate paperclip jars.")
+    print("clean - Delete all output files.")
     print("-----")
     print("Add 'force' to the end of a command to force it to run even if files already exist.")
     sys.exit(0)
@@ -163,6 +177,7 @@ if (len(sys.argv) > 3):
     print("applyPatches - Apply patches.")
     print("reobfJar - Generate real jars and place them in root directory.")
     print("paperclip - Generate paperclip jars.")
+    print("clean - Delete all output files.")
     print("-----")
     print("Add 'force' to the end of a command to force it to run even if files already exist.")
     sys.exit(0)
@@ -172,7 +187,8 @@ commands = {
         "copyPatches": copyPatches,
         "applyPatches": applyPatches,
         "reobfJar": reobfJar,
-        "paperclip": paperclip
+        "paperclip": paperclip,
+        "clean": clean
     }
 
 if (sys.argv[1] not in commands):
@@ -184,6 +200,7 @@ if (sys.argv[1] not in commands):
     print("applyPatches - Apply patches.")
     print("reobfJar - Generate real jars and place them in root directory.")
     print("paperclip - Generate paperclip jars.")
+    print("clean - Delete all output files.")
     print("-----")
     print("Add 'force' to the end of a command to force it to run even if files already exist.")
     sys.exit(0)
