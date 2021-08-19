@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: c0repwn3r <coredoescode@gmail.com>
+Date: Thu, 19 Aug 2021 12:14:20 -0400
+Subject: [PATCH] Allow sand duplication through config value
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+index 2e0191e5cfe8e29fb0a6c4fc6a2a570d4b8ae449..05a306459e82ce5fe1c951d6c7985b16488c42d6 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+@@ -524,4 +524,9 @@ public class PaperConfig {
+         itemValidationBookAuthorLength = getInt("settings.item-validation.book.author", itemValidationBookAuthorLength);
+         itemValidationBookPageLength = getInt("settings.item-validation.book.page", itemValidationBookPageLength);
+     }
++
++    public static boolean allowGravityBlockDuplication = false;
++    private static void allowGravityBlockDuplication() {
++	    allowGravityBlockDuplication = getBoolean("bandagedpaper.duplication.allow-sand-duplication", allowGravityBlockDuplication);
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+index 8336ea928faa92c6f58f8cdfb9faf1d8e26c9ccf..6e4f4cd97b3975bdd681bac93e73d8c5821a0cfb 100644
+--- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+@@ -44,6 +44,7 @@ import net.minecraft.world.phys.BlockHitResult;
+ import net.minecraft.world.phys.HitResult;
+ import net.minecraft.world.phys.Vec3;
+ import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
++import com.destroystokyo.paper.PaperConfig; // Paper
+ 
+ public class FallingBlockEntity extends Entity {
+ 
+@@ -107,7 +108,7 @@ public class FallingBlockEntity extends Entity {
+     @Override
+     public void tick() {
+         // Paper start - fix sand duping
+-        if (this.isRemoved()) {
++        if (this.isRemoved() && PaperConfig.allowGravityBlockDuplication) {
+             return;
+         }
+         // Paper end - fix sand duping
+@@ -144,7 +145,7 @@ public class FallingBlockEntity extends Entity {
+             this.move(MoverType.SELF, this.getDeltaMovement());
+ 
+             // Paper start - fix sand duping
+-            if (this.isRemoved()) {
++            if (this.isRemoved() && PaperConfig.allowGravityBlockDuplication) {
+                 return;
+             }
+             // Paper end - fix sand duping

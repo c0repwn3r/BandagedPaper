@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: c0repwn3r <coredoescode@gmail.com>
+Date: Thu, 19 Aug 2021 13:51:29 -0400
+Subject: [PATCH] Change brand name to BandagedPaper
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 3dded5c491ace6b073a7bc3178976bd70f0b9393..35dd5079734b7fb85bcd4c91b1612d2338aae1b0 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1651,7 +1651,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     @DontObfuscate
+     public String getServerModName() {
+-        return "Paper"; //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
++        return "BandagedPaper"; //BandagedPaper - BandagedPaper > Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+     }
+ 
+     public SystemReport fillSystemReport(SystemReport details) {
