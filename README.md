@@ -27,7 +27,7 @@ Make sure to update the names properly - do not keep the paper number. Look at t
 
 To submit a pull request, run:
 ```
-./bandage clean
+./bandage git
 git add .
 git commit -a -m "your message"
 ```
