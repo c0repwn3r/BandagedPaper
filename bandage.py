@@ -1,15 +1,25 @@
+###############
+### Imports ###
+###############
 import os
 import shutil
 import sys
 import glob
 import atexit
 
+########################
+### Global Variables ###
+########################
 paperCloned = False
 patchesCopied = False
 patchesApplied = False
 obfedJarGenerated = False
 paperclipJarGenerated = False
 clean = False
+
+######################
+### Parse Lockfile ###
+######################
 if (os.path.isfile("./bandage.lock")):
     lockfile = open("./bandage.lock", "r")
     lockdata = lockfile.read()
@@ -43,23 +53,30 @@ if (os.path.isfile("./bandage.lock")):
             else:
                 paperclipJarGenerated = True
 
+#################################
+### Lockfile Helper Functions ###
+#################################
 def getBSLFromBool(data):
     if (data):
         return "1"
     else:
         return "0"
 
+#####################
+### Exit Handling ###
+#####################
 def exit_handler():
-    global clean
-    if (clean):
-        return
+    # Otherwise, generate lockfile string
     ds = "pc," + getBSLFromBool(paperCloned) + ";pcp," + getBSLFromBool(patchesCopied) + ";pa," + getBSLFromBool(patchesApplied) + ";ojg," + getBSLFromBool(obfedJarGenerated) + ";pjg," + getBSLFromBool(paperclipJarGenerated)
+    # and then write it
     f = open("./bandage.lock", "w")
     f.write(ds)
     f.close()
+atexit.register(exit_handler) # Registers the exit handler
 
-atexit.register(exit_handler)
-
+#########################
+### Script Generators ###
+#########################
 def makePapercut(force):
   with open("papercut", "w") as f:
     f.write("#!/bin/bash\ngit clone https://github.com/c0repwn3r/BandagedPaper\ncd BandagedPaper\n./bandage paperclip")
@@ -81,6 +98,9 @@ def clonePaper(force):
         print("[BPDownloader/INFO] PaperMC cloned into ./work")
         paperCloned = True
 
+#############
+### Tasks ###
+#############
 def copyPatches(force):
     global paperCloned
     global patchesCopied
@@ -165,7 +185,7 @@ def clean(force):
 
 def makeGitCommit(force):
   print("[BandagedGit] Removing files to regenerate them.")
-  clean()
+  clean(False)
   os.system("rm -rf bandage papercut")
   print("[BandagedGit] Regenerating bandage")
   with open("bandage", "w") as f:
@@ -176,60 +196,37 @@ def makeGitCommit(force):
   print("[BandagedGit] Building")
   paperclip()
 
-if (len(sys.argv) == 1):
-    print("Usage: ./bandage <clonePaper|copyPatches|applyPatches|reobfJar|paperclip> [force]")
-    print("Avaliable tasks:")
-    print("clonePaper - Clones paper from upstream repository.")
-    print("copyPatches - Copies BandagedPaper patches into PaperMC patch scripts.")
-    print("applyPatches - Apply patches.")
-    print("reobfJar - Generate real jars and place them in root directory.")
-    print("paperclip - Generate paperclip jars.")
-    print("clean - Delete all output files.")
-    print("papercut - Generate papercut")
-    print("git - Generate Git PR commit")
-    print("-----")
-    print("Add 'force' to the end of a command to force it to run even if files already exist.")
-    sys.exit(0)
-if (len(sys.argv) > 3):
-    print("Usage: ./bandage <clonePaper|copyPatches|applyPatches|reobfJar|paperclip> [force]")
-    print("Avaliable tasks:")
-    print("clonePaper - Clones paper from upstream repository.")
-    print("copyPatches - Copies BandagedPaper patches into PaperMC patch scripts.")
-    print("applyPatches - Apply patches.")
-    print("reobfJar - Generate real jars and place them in root directory.")
-    print("paperclip - Generate paperclip jars.")
-    print("clean - Delete all output files.")
-    print("papercut - Generate papercut")
-    print("git - Generate Git PR commit")
-    print("-----")
-    print("Add 'force' to the end of a command to force it to run even if files already exist.")
-    sys.exit(0)
+def printHelp():
+  print("Usage: ./bandage <clonePaper|copyPatches|applyPatches|reobfJar|paperclip|clean|git> [<force>]")
+  print("------ Tasks ------")
+  print("clonePaper - Clones paper from upstream into ./work/")
+  print("copyPatches - Copy BandagedPaper patches into Paper.")
+  print("applyPatches - Apply all patches.")
+  print("reobfJar - Generate obfuscated real jars.")
+  print("paperclip - Generate paperclip jar.")
+  print("clean - Clean the workspace of all generated files.")
+  print("git - Prepare the workspace for a Git PR.")
 
 commands = {
-        "clonePaper": clonePaper,
-        "copyPatches": copyPatches,
-        "applyPatches": applyPatches,
-        "reobfJar": reobfJar,
-        "paperclip": paperclip,
-        "clean": clean,
-        "papercut": makePapercut,
-        "git": makeGitCommit
-    }
+  "clonePaper": clonePaper,
+  "copyPatches": copyPatches,
+  "applyPatches": applyPatches,
+  "reobfJar": reobfJar,
+  "paperclip": paperclip,
+  "clean": clean,
+  "git": makeGitCommit
+}
+
+if (len(sys.argv) == 1):
+    printHelp()
+    sys.exit(0)
+if (len(sys.argv) > 3):
+    printHelp()
+    sys.exit(0)
 
 if (sys.argv[1] not in commands):
     print("Unknown command '" + sys.argv[1] + "'.")
-    print("Usage: ./bandage <clonePaper|copyPatches|applyPatches|reobfJar|paperclip> [force]")
-    print("Avaliable tasks:")
-    print("clonePaper - Clones paper from upstream repository.")
-    print("copyPatches - Copies BandagedPaper patches into PaperMC patch scripts.")
-    print("applyPatches - Apply patches.")
-    print("reobfJar - Generate real jars and place them in root directory.")
-    print("paperclip - Generate paperclip jars.")
-    print("clean - Delete all output files.")
-    print("papercut - Generate papercut")
-    print("git - Generate Git PR commit")
-    print("-----")
-    print("Add 'force' to the end of a command to force it to run even if files already exist.")
+    command.printHelp()
     sys.exit(0)
 else:
     if (len(sys.argv) == 3 and sys.argv[2] == "force"):
