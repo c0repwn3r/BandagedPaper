@@ -165,6 +165,7 @@ def clean(force):
 
 def makeGitCommit(force):
   print("[BandagedGit] Removing files to regenerate them.")
+  clean()
   os.system("rm -rf bandage papercut")
   print("[BandagedGit] Regenerating bandage")
   with open("bandage", "w") as f:
