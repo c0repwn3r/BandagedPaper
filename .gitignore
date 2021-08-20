@@ -2,3 +2,4 @@
 ./work
 *.jar
 bandage.lock
+__pycache__
