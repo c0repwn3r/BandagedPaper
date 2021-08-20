@@ -60,6 +60,12 @@ def exit_handler():
 
 atexit.register(exit_handler)
 
+def makePapercut(force):
+  with open("papercut", "w") as f:
+    f.write("#!/bin/bash\ngit clone https://github.com/c0repwn3r/BandagedPaper\ncd BandagedPaper\n./bandage paperclip")
+    os.system("chmod +x papercut")
+    print("[Papercut/INFO] Generated papercut file")
+
 def clonePaper(force):
     global paperCloned
     if (paperCloned and not force):
@@ -157,6 +163,20 @@ def clean(force):
     clean = True
     sys.exit(0)
 
+def makeGitCommit(force):
+  msg = input("[BandagedGit] Enter commit message: ")
+  print("[BandagedGit] Removing files to regenerate them.")
+  os.system("rm -rf bandage papercut")
+  print("[BandagedGit] Regenerating bandage")
+  with open("bandage", "w") as f:
+    f.write("#!/bin/bash\npython bandage.py \"$@\"")
+  os.system("chmod +x bandage")
+  print("[BandagedGit] Regenerating papercut")
+  makePapercut(False)
+  print("[BandagedGit] Commiting")
+  os.system("git add .")
+  os.system("git commit -a -m " + msg)
+
 if (len(sys.argv) == 1):
     print("Usage: ./bandage <clonePaper|copyPatches|applyPatches|reobfJar|paperclip> [force]")
     print("Avaliable tasks:")
@@ -166,6 +186,8 @@ if (len(sys.argv) == 1):
     print("reobfJar - Generate real jars and place them in root directory.")
     print("paperclip - Generate paperclip jars.")
     print("clean - Delete all output files.")
+    print("papercut - Generate papercut")
+    print("git - Generate Git PR commit")
     print("-----")
     print("Add 'force' to the end of a command to force it to run even if files already exist.")
     sys.exit(0)
@@ -178,6 +200,8 @@ if (len(sys.argv) > 3):
     print("reobfJar - Generate real jars and place them in root directory.")
     print("paperclip - Generate paperclip jars.")
     print("clean - Delete all output files.")
+    print("papercut - Generate papercut")
+    print("git - Generate Git PR commit")
     print("-----")
     print("Add 'force' to the end of a command to force it to run even if files already exist.")
     sys.exit(0)
@@ -188,7 +212,9 @@ commands = {
         "applyPatches": applyPatches,
         "reobfJar": reobfJar,
         "paperclip": paperclip,
-        "clean": clean
+        "clean": clean,
+        "papercut": makePapercut,
+        "git": makeGitCommit
     }
 
 if (sys.argv[1] not in commands):
@@ -201,6 +227,8 @@ if (sys.argv[1] not in commands):
     print("reobfJar - Generate real jars and place them in root directory.")
     print("paperclip - Generate paperclip jars.")
     print("clean - Delete all output files.")
+    print("papercut - Generate papercut")
+    print("git - Generate Git PR commit")
     print("-----")
     print("Add 'force' to the end of a command to force it to run even if files already exist.")
     sys.exit(0)
