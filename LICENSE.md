@@ -7,9 +7,9 @@ under certain conditions; read below for details.
 
 ### Licensing
 This program is free software.
-As with Paper, BandagedPaper inherits it's licence from the upstream projects it is based on.
-Therefore, BandagedPaper is licenced under the GNU GPLv3 licence, inherited from Paper, which inherits it from Spigot, which in turn inherits it from the original Bukkit and CraftBukkit projects.
-GNU GPLv3 licence text can be found below.
+As with Paper, BandagedPaper inherits it's license from the upstream projects it is based on.
+Therefore, BandagedPaper is licensed under the GNU GPLv3 license, inherited from Paper, which inherits it from Spigot, which in turn inherits it from the original Bukkit and CraftBukkit projects.
+GNU GPLv3 license text can be found below.
 
 ### GNU GENERAL PUBLIC LICENSE
 
