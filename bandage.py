@@ -176,10 +176,20 @@ def paperclip(force):
 
 def clean(force):
     global clean
+    global paperCloned
+    global patchesCopied
+    global patchesApplied
+    global obfedJarGenerated
+    global paperclipJarGenerated
     for f in glob.glob("./*.jar"):
         os.remove(f)
     shutil.rmtree("./work")
     os.remove("bandage.lock")
+    paperCloned = False
+    patchesCopied = False
+    patchesApplied = False
+    obfedJarGenerated = False
+    paperclipJarGenerated = False
     clean = True
     sys.exit(0)
 
